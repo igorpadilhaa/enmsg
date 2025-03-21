@@ -79,3 +79,28 @@ func LoadKey(filePath string) (*rsa.PrivateKey, error) {
     return DecodeKey(keyData);
 }
 
+func StorePublicKey(filePath string, key *rsa.PublicKey) error {
+    file, err := os.OpenFile(filePath, os.O_CREATE | os.O_TRUNC | os.O_WRONLY, 0644);
+    if err != nil {
+        return err;
+    }
+    defer file.Close();
+
+    _, err = file.Write(EncodePublicKey(key));
+    return err;
+}
+
+func LoadPublicKey(filePath string) (*rsa.PublicKey, error) {
+    file, err := os.Open(filePath);
+    if err != nil {
+        return nil, err;
+    }
+    defer file.Close();
+
+    keyData, err := io.ReadAll(file);
+    if err != nil {
+        return nil, err;
+    }
+    return DecodePublicKey(keyData);
+}
+
